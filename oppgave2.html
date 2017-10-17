@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Oppgave 2</title>
+    <script>
+      window.onload = oppstart;
+
+      var arr = [32,61,35,32,75,21,63,75,25];
+
+      function oppstart() {
+        alert(absoluttverdi(-1));
+        alert(finnGjennomsnittUtvalg(arr, 1, 3))
+      }
+
+      function absoluttverdi (tall) {
+        if (tall < 0) {
+          var c = "";
+          var minusTall = String(tall);
+          for (var a = 1; a < minusTall.length; a++) {
+            c += minusTall[a];
+          }
+          return c;
+        }
+        return tall;
+      }
+
+      /* Trekk ut tallene mellom start og slutt-index.
+       * Summer dem til ett tal.
+       * Del på antall tall
+      */
+
+      function finnGjennomsnittUtvalg(array, startindex, sluttindex) {
+        var utvalg = array.slice(startindex, (sluttindex + 1));
+        var sum = 0;
+        console.log(utvalg);
+
+        for (var a = 0; a < utvalg.length; a++) {
+          sum += array[a];
+        }
+        return sum / utvalg.length;
+      }
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <p id="utskrift"></p>
+    </div>
+  </body>
+
+</html>

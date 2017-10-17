@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Oppgave 9</title>
+    <script>
+      window.onload = oppstart;
+
+      var alfabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
+                     "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
+                     "W", "X", "Y", "Z"];
+
+      var liste = ["F", "Y", "C", "G", "H", "I", "R", "A", "P"];
+
+      function oppstart() {
+        for (var i = 0; i < alfabet.length; i++) {
+          for (var u = 0; u < liste.length; u++) {
+            if (alfabet[i] == liste[u]) {
+              alfabet.splice(i,1,"");
+              break;
+            }
+          }
+        }
+
+        for (var b = 0; b < alfabet.length; b++) {
+          if (alfabet[b] == "") {
+            alfabet.splice(b,1);
+            console.log(alfabet);
+          }
+        }
+
+
+        document.getElementById("utskrift").innerHTML = alfabet;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <p id="utskrift"></p>
+    </div>
+  </body>
+
+</html>

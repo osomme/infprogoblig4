@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Oppgave 6</title>
+    <script>
+      window.onload = oppstart;
+
+      var tall = [3, 42, 7, 69, 12, 9, 37, 17, 10];
+
+      function oppstart() {
+        var partall = 0;
+        var oddetall = 0;
+
+        for (a = 0; a < tall.length; a++) {
+          if (tall[a] % 2 == 0) {
+            partall++;
+          }
+          else {
+            oddetall++;
+          }
+        }
+        document.getElementById("utskrift").innerHTML = "Oddetall: " + oddetall + "<br />" +
+        "Partall: " + partall; 
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <p id="utskrift"></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Oppgave 5</title>
+    <script>
+      window.onload = oppstart;
+
+      /*
+      */
+
+      var alfabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n",
+       "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+
+      function oppstart() {
+        var bokstaver = "";
+        for (var a = 0; a < alfabet.length; a++) {
+          bokstaver = "";
+          for (var b = 0; b <= a; b++) {
+            bokstaver += alfabet[a];
+          }
+          document.getElementById("utskrift").innerHTML += (a+1)+ " : " + bokstaver + "<br />";
+        }
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <p id="utskrift"></p>
+    </div>
+  </body>
+</html>

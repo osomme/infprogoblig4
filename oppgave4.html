@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Oppgave 4</title>
+    <script>
+      window.onload = oppstart;
+
+      function oppstart() {
+        var temperatur = 12.3;
+        var vindhastighet = 4.6;
+        var vindretning = "NØ";
+        var nedbor = 3.7;
+
+        console.log(nedbor != 0 && vindhastighet == 0);
+        console.log(vindretning[0] == "N" || vindretning[0] == "n");
+        console.log(nedbor > 5 || temperatur < 0 && (vindretning == "SØ" || vindretning == "sø"));
+        console.log((vindhastighet > 13.9 || vindhastighet < 17.1) && vindhastighet > 32.6);
+      }
+
+    </script>
+  </head>
+
+  <body>
+  </body>
+</html>

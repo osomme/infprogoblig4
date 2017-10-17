@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Oppgave 1</title>
+    <script>
+      window.onload = oppstart;
+
+      function oppstart() {
+        for (var a = 0; a <= 100; a++) {
+          document.getElementById("utskrift").innerHTML += a + " * " + a + " = " + a*a + "<br />";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="wrapper">
+      <p id="utskrift"></p>
+    </div>
+  </body>
+
+</html>

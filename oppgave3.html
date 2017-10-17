@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Oppgave 3</title>
+    <script>
+      window.onload = oppstart
+
+      var arr = [4,6,2,3,6,8,3,1];
+      var arr2 = [4,6,2,3,6,8,3,1];
+
+      function oppstart() {
+        alert(partall(6));
+        alert(sum(arr));
+        alert(sammeSum(arr,arr2));
+      }
+
+      function partall(tall) {
+        if (tall % 2 == 0) {
+          return true
+        }
+        return false;
+      }
+
+      function sum(liste) {
+        var s = 0;
+
+        for (var i = 0; i < liste.length; i++) {
+          s += liste[i];
+        }
+        return s;
+      }
+
+      function sammeSum(listeA,listeB) {
+        var a = 0;
+        var b = 0;
+
+        for (var i = 0; i < listeA.length; i++) {
+          a += listeA[i];
+        }
+        for (var o = 0; o < listeB.length; o++) {
+          b += listeB[o];
+        }
+        if (a == b) {
+          return true;
+        }
+        return false;
+      }
+    </script>
+
+    <body>
+
+    </body>
+</html>

@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Oppgave 7</title>
+    <script>
+      window.onload = oppstart;
+
+      var arr1 = {A: "Gale", B: "Snartenkte", C: "Stinkende", D: "Rykende" };
+      var arr2 =  {A: "Buss", B:"Nese", C: "Glass", D: "Tomat"};
+      var arr3 = {A: "muffins", B: "tastatur", C: "kopp", D: "vase"};
+
+      function oppstart() {
+        document.getElementById("btn").onclick = beregning;
+      }
+
+      function beregning() {
+        var fornavn = document.getElementById("fornavn").value.toString().toUpperCase();
+        var etternavn = document.getElementById("etternavn").value.toString().toUpperCase();
+        var fullNavn = fornavn + " " + etternavn + "!";
+
+
+        var sistebokstav = "";
+        for (var i = 0; i < etternavn.length; i++) {
+          if (etternavn[i] != undefined) {
+            sistebokstav = etternavn[i].toString();
+          }
+          console.log(sistebokstav);
+        }
+
+
+        document.getElementById("utskrift").innerHTML = "Velkommen " + fullNavn +
+        "<br />" + "Du er herved døpt " + arr1[fornavn[0]] + " " + arr2[etternavn[0]] +
+        arr3[sistebokstav];
+      }
+
+    </script>
+  </head>
+
+  <body>
+    Fornavn:<input type="text" id="fornavn" />
+    Etternavn:<input type="text" id="etternavn" />
+    <button type="button" id="btn">Generer kallenavn</button>
+    <p id="utskrift"></p>
+  </body>
+</html>

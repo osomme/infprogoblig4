@@ -43,7 +43,7 @@ button#retryBtn {
   display: none;
   position: absolute;
   left: 400px;
-  bottom: 60px;
+  top: 840px;
   background-color: #333;
   color: orange;
   z-index: 9999;
@@ -95,4 +95,3 @@ p#hintUtskrift {
   top: 200px;
   font-size: 40px;
   text-decoration: underline;
-}

@@ -2,14 +2,13 @@ window.onload = oppstart;
 
 var ctx = document.getElementById("tegneflate").getContext("2d");
 
-var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE"]; // Det korrekte svaret.
+var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE", "TOMAT"]; // Det korrekte svaret.
 
-var svar = muligeSvar[Math.floor(Math.random() * 4)]; // Trekker et tilfeldig korrekt svar.
+var svar = muligeSvar[Math.floor(Math.random() * muligeSvar.length)]; // Trekker et tilfeldig korrekt svar.
 console.log(svar);
 
 var hint = svar.split(""); // Denne skrives ut når siden lastes.
 const hint2 = svar.split(""); // Denne brukes til å finne ut om input er lik svaret.
-console.log(hint.length);
 
 
 var feilTilstand = 0; // Denne variablen sjekkes for å bestemme hvor langt brukeren er fra fail-state og å trigge neste del av tegningen. Verdien 6 er fail.
@@ -27,8 +26,11 @@ function oppstart() {
 // Skriv spørsmålstegn som hint:
 function lagHint() {
   for (var i = 0; i < svar.length; i++) {
-    hint.fill(" ? "); // Fjerner alt i arrayen og erstatter med spørsmåltegn.
+    hint.fill(" - "); // Fjerner alt i arrayen og erstatter med bindestrek.
   }
+  var tilfeldigHint = Math.floor(Math.random() * svar.length);
+  // Linja under viser brukeren 1 bokstav som hint. Hintet trekkes tilfeldig.
+  hint.splice(tilfeldigHint, 1, hint2[tilfeldigHint]);
   // join() fjerner komma og konverterer til string.
   document.getElementById("hintUtskrift").innerHTML = hint.join(" ");
 }
@@ -47,30 +49,37 @@ function sjekkInput() {
 }
 
 function testSvar() {
-  var brukerSvar = document.getElementById("input").value;
+  // La til toUpperCase for inputen bugger noen ganger og gir ikke uppercase.
+  var brukerSvar = document.getElementById("input").value.toUpperCase();
+
+  var feilSvarAntall = 0;
+  var korrektSvarAntall = 0;
+
   // Sletter det som står i inputen når du trykker på knappen.
   document.getElementById("input").value = "";
 
-  //var hintX = 600; // Brukes for canvas utskrift
-
   for (var b = 0; b < svar.length; b++) {
-    // hintX += 33; // Brukes for canvas utskrift
-    console.log(hint2[b], brukerSvar[0], svar.length);
-
     if (brukerSvar == hint2[b]) {
-      // visKorrekt(brukerSvar[0], hintX);
+      // Hvis svaret er korrekt.
+      korrektSvarAntall++;
       hint.splice(b, 1, brukerSvar);
       document.getElementById("hintUtskrift").innerHTML = hint.join(" ");
-      console.log(hint);
       korrektSvar();
-      break;
+    }
+    else {
+      feilSvarAntall++;
     }
   }
 
-  while (brukerSvar[0] != svar[b]) {
+  if (feilSvarAntall >= 1 && korrektSvarAntall < 1) {
+    feilTilstand++;
+  }
+
+/*  while (brukerSvar != hint2[b]) {
+    // Hvis svaret er feil.
     feilTilstand++;
     break;
-  }
+  } */
   feilSjekk();
 }
 
@@ -88,12 +97,12 @@ function korrektSvar() {
     er lik arrayen til det korrekte svaret. */
   var sjekkOmLike = 0;
 
-  for (var i = 0; i < hint.length; i++) {
+  for (var i = 0; i < hint2.length; i++) {
     if (hint[i] == hint2[i]) {
       sjekkOmLike++;
     }
   }
-  if (sjekkOmLike == hint.length) {
+  if (sjekkOmLike == hint2.length) {
     alert("Yay!");
   }
 }
@@ -112,7 +121,7 @@ function feilSjekk() {
     tegnStrek(225, 310, 250, 320, "palevioletred"); // Høyre arm.
   } else if (feilTilstand == 5) {
     tegnStrek(225, 340, 210, 370, "orangered"); // Venstre ben.
-  } else if (feilTilstand == 6) {
+  } else if (feilTilstand >= 6) {
     tegnStrek(225, 340, 240, 370, "black"); // Høyre ben.
     // Beskjed hvis du har failet.
     ctx.font = "40px Arial";

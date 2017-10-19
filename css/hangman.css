@@ -42,7 +42,7 @@ button#btn:active {
 button#retryBtn {
   display: none;
   position: absolute;
-  left: 400px;
+  left: 640px;
   top: 840px;
   background-color: #333;
   color: orange;
@@ -65,8 +65,8 @@ button#retryBtn:hover a {
 
 button#retryBtn:active {
   position: absolute;
-  left: 400px;
-  bottom: 55px;
+  left: 640px;
+  top: 845px;
 }
 
 div#input-wrapper {

@@ -2,7 +2,7 @@ window.onload = oppstart;
 
 var ctx = document.getElementById("tegneflate").getContext("2d");
 
-var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE", "TOMAT"]; // Det korrekte svaret.
+var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE", "TOMAT", "EPLE", "BANAN", "ANANAS"]; // Det korrekte svaret.
 
 var svar = muligeSvar[Math.floor(Math.random() * muligeSvar.length)]; // Trekker et tilfeldig korrekt svar.
 console.log(svar);
@@ -11,7 +11,7 @@ var hint = svar.split(""); // Denne skrives ut når siden lastes.
 const hint2 = svar.split(""); // Denne brukes til å finne ut om input er lik svaret.
 
 
-var feilTilstand = 0; // Denne variablen sjekkes for å bestemme hvor langt brukeren er fra fail-state og å trigge neste del av tegningen. Verdien 6 er fail.
+var feilTilstand = 0; // Denne variablen sjekkes for å bestemme hvor langt brukeren er fra fail-state og for å trigge neste del av tegningen. Verdien 6 er game over.
 
 function oppstart() {
   tegnRekt(150, 500, 350, 50); // Tegner basen på galgen.
@@ -75,11 +75,6 @@ function testSvar() {
     feilTilstand++;
   }
 
-/*  while (brukerSvar != hint2[b]) {
-    // Hvis svaret er feil.
-    feilTilstand++;
-    break;
-  } */
   feilSjekk();
 }
 
@@ -103,7 +98,8 @@ function korrektSvar() {
     }
   }
   if (sjekkOmLike == hint2.length) {
-    alert("Yay!");
+    setInterval(celebration, 25);
+    document.getElementById("retryBtn").style.display = "block";
   }
 }
 
@@ -112,7 +108,7 @@ function feilSjekk() {
     Når feilTilstand øker til verdien 6, er spillet over og spilleren har tapt.*/
 
   if (feilTilstand == 1) {
-    tegnHode(); // Tegn hode.
+    tegnSirkel(225, 275, 15, "green"); // Tegn hode.
   } else if (feilTilstand == 2) {
     tegnStrek(225, 290, 225, 340, "darkcyan"); // Mage.
   } else if (feilTilstand == 3) {
@@ -134,20 +130,62 @@ function feilSjekk() {
   }
 }
 
+var hoyreArmY = 660;
+var venstreArmY = 780;
+
+var yRetning = "ned";
+
+var farge = ["blue", "yellow", "green", "lime","orange","red","purple"];
+
+function celebration() {
+  // Slett det som allerede står der.
+  ctx.beginPath();
+  ctx.rect(150, 640, 350, 300);
+  ctx.fillStyle = "white";
+  ctx.fill();
+
+  // Tegner hodet på stikkfiguren.
+  tegnSirkel(320, 620, 35, "black");
+  // Øyne
+  tegnSirkel(305, 610, 5, "black");
+  tegnSirkel(335, 610, 5, "black");
+  // Munn
+  ctx.beginPath();
+  ctx.arc(320, 630, 20, 0, Math.PI);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  tegnStrek(320, 655, 320, 820, "black"); // Mage
+  tegnStrek(320, 820, 380, 880, "black"); // Høyre ben
+  tegnStrek(320, 820, 260, 880, "black"); // Venstre ben
+
+  tegnStrek(320, 720, 280, hoyreArmY, farge[Math.floor(Math.random() * farge.length)]); // Høyre arm
+  tegnStrek(320, 720, 360, venstreArmY, farge[Math.floor(Math.random() * farge.length)]); // Venstre arm
+
+  if (hoyreArmY == 792) {
+    yRetning = "ned";
+  }
+  else if (hoyreArmY == 660) {
+    yRetning = "opp";
+  }
+
+  if (yRetning == "ned") {
+    hoyreArmY -= 3;
+    venstreArmY += 3;
+  }
+  else if (yRetning == "opp") {
+    hoyreArmY += 3;
+    venstreArmY -= 3;
+  }
+}
+
+
 function tegnRekt(x, y, b, h) {
   // Tegner et rektangel.
   ctx.rect(x, y, b, h);
   ctx.fillStyle = "black";
   ctx.fill();
-  ctx.stroke();
-}
-
-function tegnHode() {
-  // Tegner hodet på stikkfiguren.
-  ctx.beginPath();
-  ctx.arc(225, 275, 15, 0, 2 * Math.PI);
-  ctx.strokeStyle = "green";
-  ctx.lineWidth = 3;
   ctx.stroke();
 }
 
@@ -157,5 +195,13 @@ function tegnStrek(x, y, x2, y2, farge) {
   ctx.moveTo(x, y);
   ctx.lineTo(x2, y2);
   ctx.strokeStyle = farge;
+  ctx.stroke();
+}
+
+function tegnSirkel(x, y, r, farge) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, 2 * Math.PI);
+  ctx.strokeStyle = farge;
+  ctx.lineWidth = 3;
   ctx.stroke();
 }

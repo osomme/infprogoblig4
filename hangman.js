@@ -53,6 +53,7 @@ function sjekkInput() {
   if (input.length > 1) {
     document.getElementById("input").value = input.slice(0, 1);
   }
+  testSvar();
 }
 
 
@@ -186,6 +187,9 @@ function gameOver() {
     else {
       ctx.fillText("Game over! Du gikk tom for tid!", 15, 800);
     }
+
+    document.getElementById("hintUtskrift").innerHTML = svar;
+
     // Fjerner "Sjekk svar" knappen og inputboksen.
     document.getElementById("btn").style.display = "none";
     document.getElementById("input").style.display = "none";

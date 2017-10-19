@@ -48,6 +48,11 @@ function sjekkInput() {
   }
 }
 
+
+
+/*************************************************************
+* Funksjon som sjekker om brukerinput er korrekt.            *
+*************************************************************/
 function testSvar() {
   // La til toUpperCase for inputen bugger noen ganger og gir ikke uppercase.
   var brukerSvar = document.getElementById("input").value.toUpperCase();
@@ -78,15 +83,12 @@ function testSvar() {
   feilSjekk();
 }
 
-/*
-function visKorrekt(t, x) {
-  ctx.font = "40px Arial";
-  ctx.textDecoration = "underline";
-  ctx.textAlign = "center";
-  ctx.textColor = "blue";
-  ctx.fillText(t, x, 200);
-} */
 
+
+
+/*************************************************************
+* Funksjon som sjekker om HELE SVARET er korrekt.            *
+*************************************************************/
 function korrektSvar() {
   /* Denne funksjonen sjekker om arrayet som ble skapt av svarene til brukeren
     er lik arrayen til det korrekte svaret. */
@@ -103,6 +105,10 @@ function korrektSvar() {
   }
 }
 
+
+/*************************************************************
+* Funksjon som sjekker fail-nivå og tegner hangman-figuren.  *
+*************************************************************/
 function feilSjekk() {
   /* Hver gang brukeren skriver feil svar øker variablen feilTilstand med 1.
     Når feilTilstand øker til verdien 6, er spillet over og spilleren har tapt.*/
@@ -130,6 +136,13 @@ function feilSjekk() {
   }
 }
 
+
+
+
+
+/*************************************************************
+* Animert stikkfigur som vises når spilleren vinner.         *
+*************************************************************/
 var hoyreArmY = 660;
 var venstreArmY = 780;
 
@@ -181,6 +194,9 @@ function celebration() {
 }
 
 
+/*************************************************************
+* Funksjoner for tegning av sirkler, streker og firkanter.   *
+*************************************************************/
 function tegnRekt(x, y, b, h) {
   // Tegner et rektangel.
   ctx.rect(x, y, b, h);

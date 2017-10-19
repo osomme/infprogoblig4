@@ -1,11 +1,17 @@
 window.onload = oppstart;
 
-var ctx = document.getElementById("tegneflate").getContext("2d");
+var tidIgjen = setInterval(tid, 1000); // Starter en timer som teller ned fra 60.
 
-var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE", "TOMAT", "EPLE", "BANAN", "ANANAS"]; // Det korrekte svaret.
+var ctx = document.getElementById("tegneflate").getContext("2d");
+// Det korrekte svaret.
+var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE", "TOMAT", "EPLE", "BANAN", "ANANAS"];
+
+var poeng = 0; // Spillet har et score-system.
 
 var svar = muligeSvar[Math.floor(Math.random() * muligeSvar.length)]; // Trekker et tilfeldig korrekt svar.
 console.log(svar);
+
+var feilBokstaver = []; // Denne arrayen skrives ut og viser bokstaver som er gjettet på men er feil.
 
 var hint = svar.split(""); // Denne skrives ut når siden lastes.
 const hint2 = svar.split(""); // Denne brukes til å finne ut om input er lik svaret.
@@ -14,13 +20,14 @@ const hint2 = svar.split(""); // Denne brukes til å finne ut om input er lik sv
 var feilTilstand = 0; // Denne variablen sjekkes for å bestemme hvor langt brukeren er fra fail-state og for å trigge neste del av tegningen. Verdien 6 er game over.
 
 function oppstart() {
-  tegnRekt(150, 500, 350, 50); // Tegner basen på galgen.
-  tegnRekt(300, 150, 50, 350); // Vertikal strek fra galgen.
-  tegnRekt(150, 150, 150, 30); // Horisontal strek på toppen av galgen.
-  tegnRekt(220, 180, 10, 80); // Linja som går ned til strekfiguren.
+  tegnRekt(150, 500, 350, 50, "black"); // Tegner basen på galgen.
+  tegnRekt(300, 150, 50, 350, "black"); // Vertikal strek fra galgen.
+  tegnRekt(150, 150, 150, 30, "black"); // Horisontal strek på toppen av galgen.
+  tegnRekt(220, 180, 10, 80, "black"); // Linja som går ned til strekfiguren.
   lagHint();
   document.getElementById("input").oninput = sjekkInput;
   document.getElementById("btn").onclick = testSvar;
+  document.getElementById("retryBtn").onclick = retry;
 }
 
 // Skriv spørsmålstegn som hint:
@@ -51,14 +58,17 @@ function sjekkInput() {
 
 
 /*************************************************************
-* Funksjon som sjekker om brukerinput er korrekt.            *
-*************************************************************/
+ * Funksjon som sjekker om brukerinput er korrekt.            *
+ *************************************************************/
+var feilSvarAntall = 0;
+var korrektSvarAntall = 0;
+
 function testSvar() {
   // La til toUpperCase for inputen bugger noen ganger og gir ikke uppercase.
   var brukerSvar = document.getElementById("input").value.toUpperCase();
 
-  var feilSvarAntall = 0;
-  var korrektSvarAntall = 0;
+  feilSvarAntall = 0;
+  korrektSvarAntall = 0;
 
   // Sletter det som står i inputen når du trykker på knappen.
   document.getElementById("input").value = "";
@@ -67,28 +77,31 @@ function testSvar() {
     if (brukerSvar == hint2[b]) {
       // Hvis svaret er korrekt.
       korrektSvarAntall++;
+      poeng += 2000;
       hint.splice(b, 1, brukerSvar);
       document.getElementById("hintUtskrift").innerHTML = hint.join(" ");
       korrektSvar();
-    }
-    else {
+    } else {
       feilSvarAntall++;
     }
   }
 
   if (feilSvarAntall >= 1 && korrektSvarAntall < 1) {
     feilTilstand++;
+    poeng -= 1000;
+    feilBokstaver.push(brukerSvar);
+    document.getElementById("feilUtskrift").innerHTML = feilBokstaver.join(" ");
   }
 
+  document.getElementById("score").innerHTML = "Poeng: " + poeng; // Skriver ut poengsummen.
   feilSjekk();
 }
 
 
 
-
 /*************************************************************
-* Funksjon som sjekker om HELE SVARET er korrekt.            *
-*************************************************************/
+ * Funksjon som sjekker om HELE SVARET er korrekt.            *
+ *************************************************************/
 function korrektSvar() {
   /* Denne funksjonen sjekker om arrayet som ble skapt av svarene til brukeren
     er lik arrayen til det korrekte svaret. */
@@ -101,14 +114,40 @@ function korrektSvar() {
   }
   if (sjekkOmLike == hint2.length) {
     setInterval(celebration, 25);
-    document.getElementById("retryBtn").style.display = "block";
+    clearInterval(tidIgjen); // Stopper timeren, siden spilleren har rett svar.
+    document.getElementById("score").innerHTML = poeng *= timer; // Endelig poengsum.
+    document.getElementById("retryBtn").style.display = "block"; // Vise retry-knapp.
+    document.getElementById("btn").style.display = "none"; // Skjuler "sjekk svar" knappen.
   }
 }
 
 
-/*************************************************************
-* Funksjon som sjekker fail-nivå og tegner hangman-figuren.  *
-*************************************************************/
+/***********
+ * Timer.  *
+ **********/
+var timer = 60; // sekunder.
+function tid() {
+  if (timer <= 15 && timer > 0) {
+    document.getElementById("timer").style.color = "red";
+    document.getElementById("timer").style.fontSize = "70px";
+    document.getElementById("timer").innerHTML = timer;
+    timer--;
+  } else if (timer == 0) {
+    timer = 0;
+    document.getElementById("timer").innerHTML = timer;
+    feilTilstand = 6;
+    feilSjekk();
+  } else {
+    timer--;
+    document.getElementById("timer").innerHTML = timer + " sekunder gjenstår";
+  }
+}
+
+
+
+/**************************************************************
+ * Funksjoner som sjekker fail-nivå og tegner hangman-figuren.*
+ **************************************************************/
 function feilSjekk() {
   /* Hver gang brukeren skriver feil svar øker variablen feilTilstand med 1.
     Når feilTilstand øker til verdien 6, er spillet over og spilleren har tapt.*/
@@ -122,12 +161,31 @@ function feilSjekk() {
   } else if (feilTilstand == 4) {
     tegnStrek(225, 310, 250, 320, "palevioletred"); // Høyre arm.
   } else if (feilTilstand == 5) {
+    setInterval(blinkAdvarsel, 300);
     tegnStrek(225, 340, 210, 370, "orangered"); // Venstre ben.
-  } else if (feilTilstand >= 6) {
-    tegnStrek(225, 340, 240, 370, "black"); // Høyre ben.
-    // Beskjed hvis du har failet.
-    ctx.font = "40px Arial";
-    ctx.fillText("Game over! Du klarte ikke å finne det rette svaret", 15, 800);
+  }
+  gameOver();
+}
+
+function gameOver() {
+  if (feilTilstand >= 6) {
+    tegnSirkel(225, 275, 15, "red"); // Hode.
+    tegnStrek(225, 290, 225, 340, "red"); // Mage.
+    tegnStrek(225, 310, 200, 320, "red"); // Venstre arm.
+    tegnStrek(225, 310, 250, 320, "red"); // Høyre arm.
+    tegnStrek(225, 340, 210, 370, "red"); // Venstre ben.
+    tegnStrek(225, 340, 240, 370, "red"); // Høyre ben.
+    // Beskjed at du har failet.
+    ctx.font = "36px Arial";
+    // Hvis spilleren failet fordi hangman-figuren ble ferdig tegnet.
+    if (timer > 0) {
+      ctx.fillText("Game over! Du klarte ikke å finne det rette svaret", 15, 800);
+      clearInterval(tidIgjen); // Stopper timeren.
+    }
+    // Hvis timeren gikk ut.
+    else {
+      ctx.fillText("Game over! Du gikk tom for tid!", 15, 800);
+    }
     // Fjerner "Sjekk svar" knappen og inputboksen.
     document.getElementById("btn").style.display = "none";
     document.getElementById("input").style.display = "none";
@@ -138,56 +196,75 @@ function feilSjekk() {
 
 
 
+/******************************************************************************************
+ * Gjør hangman-figuren til blinkende for å advare brukeren om at de har ett forsøk igjen.*
+ ******************************************************************************************/
+var advarselFarge = "red";
 
+function blinkAdvarsel() {
+  if (advarselFarge == "red") {
+    advarselFarge = "white";
+  } else {
+    advarselFarge = "red";
+  }
 
-/*************************************************************
-* Animert stikkfigur som vises når spilleren vinner.         *
-*************************************************************/
+  if (feilTilstand == 5) {
+    tegnSirkel(225, 275, 15, advarselFarge); // Hode.
+    tegnStrek(225, 290, 225, 340, advarselFarge); // Mage.
+    tegnStrek(225, 310, 200, 320, advarselFarge); // Venstre arm.
+    tegnStrek(225, 310, 250, 320, advarselFarge); // Høyre arm.
+    tegnStrek(225, 340, 210, 370, advarselFarge); // Venstre ben.
+  }
+}
+
+/**************************************************************
+ * Animert stikkfigur som vises når spilleren vinner.         *
+ **************************************************************/
 var hoyreArmY = 660;
 var venstreArmY = 780;
 
 var yRetning = "ned";
 
-var farge = ["blue", "yellow", "green", "lime","orange","red","purple"];
+var farge = ["blue", "yellow", "green", "lime", "orange", "red", "purple"];
 
 function celebration() {
+  var tilfeldigFarge = Math.floor(Math.random() * farge.length);
+
   // Slett det som allerede står der.
   ctx.beginPath();
-  ctx.rect(150, 640, 350, 300);
+  ctx.rect(150, 580, 350, 300);
   ctx.fillStyle = "white";
   ctx.fill();
 
   // Tegner hodet på stikkfiguren.
   tegnSirkel(320, 620, 35, "black");
   // Øyne
-  tegnSirkel(305, 610, 5, "black");
-  tegnSirkel(335, 610, 5, "black");
+  tegnSirkel(305, 610, 5, "red");
+  tegnSirkel(335, 610, 5, "red");
   // Munn
   ctx.beginPath();
   ctx.arc(320, 630, 20, 0, Math.PI);
-  ctx.strokeStyle = "black";
+  ctx.strokeStyle = "green";
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  tegnStrek(320, 655, 320, 820, "black"); // Mage
-  tegnStrek(320, 820, 380, 880, "black"); // Høyre ben
-  tegnStrek(320, 820, 260, 880, "black"); // Venstre ben
+  tegnStrek(320, 655, 320, 820, "brown");// Mage
+  tegnStrek(320, 820, 380, 880, "blue"); // Høyre ben
+  tegnStrek(320, 820, 260, 880, "blue"); // Venstre ben
 
-  tegnStrek(320, 720, 280, hoyreArmY, farge[Math.floor(Math.random() * farge.length)]); // Høyre arm
-  tegnStrek(320, 720, 360, venstreArmY, farge[Math.floor(Math.random() * farge.length)]); // Venstre arm
+  tegnStrek(320, 720, 280, hoyreArmY, farge[tilfeldigFarge]); // Høyre arm
+  tegnStrek(320, 720, 360, venstreArmY, farge[tilfeldigFarge]); // Venstre arm
 
-  if (hoyreArmY == 792) {
+  if (hoyreArmY >= 770) {
     yRetning = "ned";
-  }
-  else if (hoyreArmY == 660) {
+  } else if (hoyreArmY <= 675) {
     yRetning = "opp";
   }
 
   if (yRetning == "ned") {
     hoyreArmY -= 3;
     venstreArmY += 3;
-  }
-  else if (yRetning == "opp") {
+  } else if (yRetning == "opp") {
     hoyreArmY += 3;
     venstreArmY -= 3;
   }
@@ -195,12 +272,12 @@ function celebration() {
 
 
 /*************************************************************
-* Funksjoner for tegning av sirkler, streker og firkanter.   *
-*************************************************************/
-function tegnRekt(x, y, b, h) {
+ * Funksjoner for tegning av sirkler, streker og firkanter.   *
+ *************************************************************/
+function tegnRekt(x, y, b, h, farge) {
   // Tegner et rektangel.
   ctx.rect(x, y, b, h);
-  ctx.fillStyle = "black";
+  ctx.fillStyle = farge;
   ctx.fill();
   ctx.stroke();
 }
@@ -211,6 +288,7 @@ function tegnStrek(x, y, x2, y2, farge) {
   ctx.moveTo(x, y);
   ctx.lineTo(x2, y2);
   ctx.strokeStyle = farge;
+  ctx.fill();
   ctx.stroke();
 }
 
@@ -220,4 +298,9 @@ function tegnSirkel(x, y, r, farge) {
   ctx.strokeStyle = farge;
   ctx.lineWidth = 3;
   ctx.stroke();
+}
+
+/* Laster siden på nytt */
+function retry() {
+  location.reload();
 }

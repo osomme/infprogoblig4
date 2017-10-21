@@ -1,6 +1,7 @@
 body {
   width: 100%;
   max-width: 1000px;
+  background-color: #333;
 }
 
 body * {
@@ -12,41 +13,17 @@ p, a {
 }
 
 canvas {
-  border-style: dashed;
+  border-style: solid;
   padding: 0;
   z-index: 0;
-}
-
-button#btn {
-  position: absolute;
-  width: 80px;
-  height: 30px;
-  background-color: #333;
-  top: 650px;
-  left: 675px;
-  color: white;
-  z-index: 9999;
-  text-align: center;
-  padding: 5px;
-  border: 0;
-}
-
-button#btn:hover {
-  background-color: orange;
-  color: black;
-  cursor: pointer;
-}
-
-button#btn:active {
-  position: absolute;
-  top: 655px;
-  left: 675px;
+  background-color: white;
+  opacity: 0.8;
 }
 
 button#retryBtn {
   display: none;
   position: absolute;
-  left: 640px;
+  left: 680px;
   top: 840px;
   background-color: #333;
   color: orange;
@@ -57,11 +34,6 @@ button#retryBtn {
   font-size: 30px;
 }
 
-a {
-  color: orange;
-  text-decoration: none;
-}
-
 button#retryBtn:hover {
   background-color: orange;
   color: black;
@@ -70,13 +42,13 @@ button#retryBtn:hover {
 
 button#retryBtn:active {
   position: absolute;
-  left: 640px;
+  left: 680px;
   top: 845px;
 }
 
 div#input-wrapper {
   position: absolute;
-  top: 600px;
+  top: 400px;
   left: 700px;
   width: 1.5em;
   border-bottom: 5px solid black;
@@ -104,7 +76,7 @@ p#hintUtskrift {
 
 p#feilUtskrift {
   position: absolute;
-  top: 640px;
+  top: 450px;
   left: 600px;
   font-size: 40px;
   text-decoration: line-through;
@@ -126,4 +98,8 @@ p#score {
   font-size: 35px;
   margin: 0;
   padding: 0;
+}
+
+img {
+  display: none;
 }

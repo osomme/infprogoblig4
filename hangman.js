@@ -1,15 +1,15 @@
 window.onload = oppstart;
 
 var tidIgjen = setInterval(tid, 1000); // Starter en timer som teller ned fra 60.
-
 var ctx = document.getElementById("tegneflate").getContext("2d");
-// Det korrekte svaret.
+
+// Array som inneholder det korrekte svaret.
 var muligeSvar = ["TIMER", "PERSON", "VINDU", "NORGE", "TOMAT", "EPLE", "BANAN", "ANANAS"];
-
-var poeng = 0; // Spillet har et score-system.
-
 var svar = muligeSvar[Math.floor(Math.random() * muligeSvar.length)]; // Trekker et tilfeldig korrekt svar.
-console.log(svar);
+console.log(svar); // Du jukser vel ikke?
+
+
+var poeng = 0; // Score-systemet.
 
 var feilBokstaver = []; // Denne arrayen skrives ut og viser bokstaver som er gjettet på men er feil.
 
@@ -20,13 +20,14 @@ const hint2 = svar.split(""); // Denne brukes til å finne ut om input er lik sv
 var feilTilstand = 0; // Denne variablen sjekkes for å bestemme hvor langt brukeren er fra fail-state og for å trigge neste del av tegningen. Verdien 6 er game over.
 
 function oppstart() {
+  tid();
   tegnRekt(150, 500, 350, 50, "black"); // Tegner basen på galgen.
   tegnRekt(300, 150, 50, 350, "black"); // Vertikal strek fra galgen.
   tegnRekt(150, 150, 150, 30, "black"); // Horisontal strek på toppen av galgen.
   tegnRekt(220, 180, 10, 80, "black"); // Linja som går ned til strekfiguren.
   lagHint();
+  document.getElementById("input").focus();
   document.getElementById("input").oninput = sjekkInput;
-  document.getElementById("btn").onclick = testSvar;
   document.getElementById("retryBtn").onclick = retry;
 }
 
@@ -43,15 +44,11 @@ function lagHint() {
 }
 
 function sjekkInput() {
-  /* Denne funksjoner begrenser brukeren til 1 bokstav i inputboksen.
-      Den gjør i tillegg bokstaven til stor bokstav. */
+  // Denne funksjoner begrenser brukeren til 1 bokstav i inputboksen.
   var input = document.getElementById("input").value;
 
   if (input.length == 1) {
     document.getElementById("input").value = input.toUpperCase();
-  }
-  if (input.length > 1) {
-    document.getElementById("input").value = input.slice(0, 1);
   }
   testSvar();
 }
@@ -114,11 +111,12 @@ function korrektSvar() {
     }
   }
   if (sjekkOmLike == hint2.length) {
-    setInterval(celebration, 25);
-    clearInterval(tidIgjen); // Stopper timeren, siden spilleren har rett svar.
-    document.getElementById("score").innerHTML = poeng *= timer; // Endelig poengsum.
+    setInterval(celebration, 20);
+    clearInterval(tidIgjen); // Stopper timeren.
+    document.getElementById("score").innerHTML = poeng *= timer / 2; // Endelig poengsum.
     document.getElementById("retryBtn").style.display = "block"; // Vise retry-knapp.
-    document.getElementById("btn").style.display = "none"; // Skjuler "sjekk svar" knappen.
+    document.getElementById("input").style.display = "none";
+    document.getElementById("retryBtn").focus(); //Gir focus til retry-knappen.
   }
 }
 
@@ -164,8 +162,10 @@ function feilSjekk() {
   } else if (feilTilstand == 5) {
     setInterval(blinkAdvarsel, 300);
     tegnStrek(225, 340, 210, 370, "orangered"); // Venstre ben.
+  } else if (feilTilstand == 6) {
+
+    gameOver();
   }
-  gameOver();
 }
 
 function gameOver() {
@@ -178,9 +178,9 @@ function gameOver() {
     tegnStrek(225, 340, 240, 370, "red"); // Høyre ben.
     // Beskjed at du har failet.
     ctx.font = "36px Arial";
-    // Hvis spilleren failet fordi hangman-figuren ble ferdig tegnet.
+    // Hvis spilleren failet fordi de svarte feil 6 ganger.
     if (timer > 0) {
-      ctx.fillText("Game over! Du klarte ikke å finne det rette svaret", 15, 800);
+      ctx.fillText("Game over! Du klarte ikke å finne det rette svaret.", 30, 800);
       clearInterval(tidIgjen); // Stopper timeren.
     }
     // Hvis timeren gikk ut.
@@ -188,13 +188,11 @@ function gameOver() {
       ctx.fillText("Game over! Du gikk tom for tid!", 15, 800);
     }
 
-    document.getElementById("hintUtskrift").innerHTML = svar;
-
-    // Fjerner "Sjekk svar" knappen og inputboksen.
-    document.getElementById("btn").style.display = "none";
+    document.getElementById("hintUtskrift").innerHTML = svar; // Sriv ut det korrekte svaret.
     document.getElementById("input").style.display = "none";
     // Viser retry-knapp.
     document.getElementById("retryBtn").style.display = "block";
+    document.getElementById("retryBtn").focus(); //Gir focus til retry-knappen.
   }
 }
 
@@ -221,44 +219,44 @@ function blinkAdvarsel() {
   }
 }
 
-/**************************************************************
- * Animert stikkfigur som vises når spilleren vinner.         *
- **************************************************************/
-var hoyreArmY = 660;
-var venstreArmY = 780;
-
-var yRetning = "ned";
-
+/*****************************
+ * Animert stikkfigur        *
+ *****************************/
+var x = 68;
 var farge = ["blue", "yellow", "green", "lime", "orange", "red", "purple"];
 
 function celebration() {
   var tilfeldigFarge = Math.floor(Math.random() * farge.length);
 
   // Slett det som allerede står der.
-  ctx.beginPath();
-  ctx.rect(150, 580, 350, 300);
-  ctx.fillStyle = "white";
-  ctx.fill();
+  ctx.clearRect(0, 550, 710, 328);
 
-  // Tegner hodet på stikkfiguren.
-  tegnSirkel(320, 620, 35, "black");
-  // Øyne
-  tegnSirkel(305, 610, 5, "red");
-  tegnSirkel(335, 610, 5, "red");
-  // Munn
-  ctx.beginPath();
-  ctx.arc(320, 630, 20, 0, Math.PI);
-  ctx.strokeStyle = "green";
-  ctx.lineWidth = 3;
-  ctx.stroke();
+  // Bilde av Tom Heine.
+  var bildeAvTom = document.getElementById("tom");
+  ctx.drawImage(bildeAvTom, (x - 30), 595, 60, 60);
 
-  tegnStrek(320, 655, 320, 820, "brown");// Mage
-  tegnStrek(320, 820, 380, 880, "blue"); // Høyre ben
-  tegnStrek(320, 820, 260, 880, "blue"); // Venstre ben
+  tegnStrek(x, 655, x, 820, "brown"); // Mage
+  tegnStrek(x, 820, (x + 60), 880, "blue"); // Høyre ben
+  tegnStrek(x, 820, (x - 60), 880, "blue"); // Venstre ben
 
-  tegnStrek(320, 720, 280, hoyreArmY, farge[tilfeldigFarge]); // Høyre arm
-  tegnStrek(320, 720, 360, venstreArmY, farge[tilfeldigFarge]); // Venstre arm
+  tegnStrek(x, 720, (x - 40), hoyreArmY, farge[tilfeldigFarge]); // Høyre arm
+  tegnStrek(x, 720, (x + 40), venstreArmY, farge[tilfeldigFarge]); // Venstre arm
 
+  animasjon(); // Call for å starte animasjon av figuren vi har tegnet.
+  winTxt();
+}
+
+// Startposisjoner for figuren i animasjonen.
+var hoyreArmY = 660;
+var venstreArmY = 780;
+var hoyreArmX = 267;
+var venstreArmX = 359;
+
+var xRetning = "hoyre";
+var yRetning = "ned";
+
+function animasjon() {
+  // Beveger armene opp og ned.
   if (hoyreArmY >= 770) {
     yRetning = "ned";
   } else if (hoyreArmY <= 675) {
@@ -266,14 +264,34 @@ function celebration() {
   }
 
   if (yRetning == "ned") {
-    hoyreArmY -= 3;
     venstreArmY += 3;
+    hoyreArmY -= 3;
   } else if (yRetning == "opp") {
-    hoyreArmY += 3;
     venstreArmY -= 3;
+    hoyreArmY += 3;
+  }
+
+  // Flytter figuren på X-aksen.
+  if (x > 540) {
+    xRetning = "venstre";
+  } else if (x < 70) {
+    xRetning = "hoyre";
+  }
+
+  if (xRetning == "venstre") {
+    hoyreArmX -= 3;
+    x -= 3;
+  } else if (xRetning == "hoyre") {
+    hoyreArmX += 3;
+    x += 3;
   }
 }
 
+function winTxt() {
+  ctx.font = "24px Arial Black";
+  ctx.textAlign = "center";
+  ctx.fillText("Du vant!", x, 580);
+}
 
 /*************************************************************
  * Funksjoner for tegning av sirkler, streker og firkanter.   *
@@ -291,6 +309,7 @@ function tegnStrek(x, y, x2, y2, farge) {
   ctx.beginPath();
   ctx.moveTo(x, y);
   ctx.lineTo(x2, y2);
+  ctx.lineWidth = 5;
   ctx.strokeStyle = farge;
   ctx.fill();
   ctx.stroke();

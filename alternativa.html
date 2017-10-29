@@ -3,10 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <title>Alternativ A</title>
-    <script src="alternativa.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/reaksjon.css" />
+    <script async src="alternativa.js"></script>
   </head>
-
   <body>
-    
+    <div id="spillelementer">
+      <canvas id="tegneflate" height="900" width="900"></canvas>
+      <p id="gjennomsnitt"></p>
+      <p id="utskrift"></p>
+      <div id="boks"></div>
+    </div>
+    <div id="hjelp">
+      <p>Hvordan spille: <br />
+        Klikk på sirkelen når den blir rød. <br />
+        For å prøve på nytt, trykk på enhver knapp.
+      </p>
+      <p>Trykk på start-knappen for å begynne.</p>
+      <button type="button" id="hjelpBtn">Start</button>
+    </div>
   </body>
 </html>
